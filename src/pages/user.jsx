@@ -1,6 +1,5 @@
 import ScrollGrid from "../components/scrollGrid";
 import { useNavigate, useParams } from "react-router";
-import Dropdown from "../components/dropdown";
 import { Link } from "react-router";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
@@ -9,6 +8,7 @@ import { MenuItem } from "@headlessui/react";
 import { SessionData } from "../components/layout/mainLayout";
 import { UseToken } from "../helpers/useToken";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import BottomDrawer from "../components/bottomDrawer";
 
 export default function User(){
   const {username} = useParams();
@@ -19,8 +19,8 @@ export default function User(){
   const [error, setError] = useState(false);
   const id = data?.id
   const sessionData = useContext(SessionData)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   
-  // navigate(0)
 
   async function fetchSelfData() {
     try{
@@ -51,7 +51,9 @@ export default function User(){
   },[username])
 
   return(
-    error ? (
+    <>
+    {
+   error ? (
       <p>not found</p>
     ):(
       <div className="min-h-screen text-white px-4 md:px-12">
@@ -97,39 +99,10 @@ export default function User(){
                 </div>
               )}
               <div className=" absolute right-3 top-0">
-                <Dropdown
-                  buttonContent={
+                <button className="p-1 rounded-full hover:bg-accent-dark-gray duration-150 transition-all" onClick={()=> setIsDrawerOpen(!isDrawerOpen)}>
                   <Icon height={30} icon={"bi:three-dots"} />
-                }
-                  dropdownContent={
-                    <div className="flex flex-col gap-3">
-                      {id == sessionData?.id ? (
-                        <Link to="/profile/edit">
-                          <button
-                          type="button"
-                          className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
-                          >
-                          Edit Profile
-                          </button>
-                        </Link> 
-                      ):(
-                        <MenuItem>
-                          <div className="flex flex-col">
-                            <button
-                                type="button"
-                                className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
-                                onClick={() => setIsDialogOpen(!isDialogOpen)}
-                            >
-                                Report
-                            </button>
-                          </div>
-                        </MenuItem>
-                      )}
-                    </div>
-                    }
-                  />   
+                </button>
               </div>
-
             </div>
             <div className="w-full relative flex items-center md:col-start-2 h-36">
               <div className="md:absolute md:right-3">
@@ -173,7 +146,35 @@ export default function User(){
           
         </div>
       </div>
-    )
-    
+    )   
+    }
+    <BottomDrawer isOpen={isDrawerOpen}
+    onClose={()=> setIsDrawerOpen(false)}
+    drawerContent={
+      <div className="flex flex-col gap-3">
+        {id == sessionData?.id ? (
+          <Link to="/profile/edit">
+            <button
+            type="button"
+            className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
+            >
+            Edit Profile
+            </button>
+          </Link> 
+        ):(
+          <div className="flex flex-col">
+            <button
+                type="button"
+                className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
+                onClick={() => setIsDialogOpen(!isDialogOpen)}
+            >
+              Report
+            </button>
+          </div>
+        )}
+      </div>
+    }
+    />
+    </>
     )
 }

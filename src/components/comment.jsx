@@ -1,5 +1,4 @@
 import { Icon } from "@iconify/react/dist/iconify.js"
-import Dropdown from "./dropdown"
 import { MenuItem } from "@headlessui/react"
 import { useContext, useState } from "react"
 import ReportModal from "./reportModal"
@@ -9,6 +8,7 @@ import EditComment from "./editComment"
 import axios from "axios"
 import { SessionData } from "./layout/mainLayout"
 import { months } from "./json/months"
+import BottomDrawer from "./bottomDrawer"
 
 export default function Comment ({id,repUserId, profilePicture, username, date, comment, profileLink}){
     const baseUrl = import.meta.env.VITE_API_URL;
@@ -16,6 +16,7 @@ export default function Comment ({id,repUserId, profilePicture, username, date, 
     const [isEditDialog, setIsEditDialog] = useState(false);
     const navigate = useNavigate();
     const sessionData = useContext(SessionData);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     async function handleDelete() {
       await axios.delete(`${baseUrl}/api/comment/${id}`,{
@@ -28,7 +29,8 @@ export default function Comment ({id,repUserId, profilePicture, username, date, 
   }
 
     return(
-        <div key={id} className="flex items-start gap-3">
+      <>
+        <div key={id} className="flex items-start gap-3 mb-20">
           <Link to={`/profile/${profileLink}`}>
           <div className="size-9 relative">
             <div className="absolute inset-0 size-full rounded-full bg-black/30 opacity-0 hover:opacity-100 transition-all duration-150"></div>
@@ -47,35 +49,9 @@ export default function Comment ({id,repUserId, profilePicture, username, date, 
                   </Link>
                   <span className="text-text-gray ml-1 text-sm">{' · '+ months[date.slice(5,7).replace('0','')] +' '+ date.slice(8,10) + ', ' + date.slice(0,4)}</span>  
                 </div>
-                
-                <Dropdown
-                buttonContent={<Icon icon={"bi:three-dots"} height={18} />}
-                dropdownContent={
-                  <MenuItem>
-                    <div className="flex flex-col">
-                      {profileLink == sessionData?.username ? (
-                        <>
-                          <button onClick={()=>setIsEditDialog(!isEditDialog)} className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded">
-                            Edit
-                          </button>
-                          <button onClick={handleDelete} className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded">
-                            Delete Comment
-                          </button>
-                        </>
-                      ):(
-                                        <button
-                        type="button"
-                        className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
-                          onClick={() => setIsDialogOpen(!isDialogOpen)}
-                    >
-                        Report
-                    </button>    
-                      )}
-
-                    </div>
-                  </MenuItem>
-                }
-              />
+                <button className="p-1 rounded-full hover:bg-accent-dark-gray duration-150 transition-all" onClick={()=>setIsDrawerOpen(true)}>
+                  <Icon icon={"bi:three-dots"} height={18} />
+                </button>
               </div>
               <p className="mt-1 text-sm text-gray-200">{comment}</p>
             </div>
@@ -91,5 +67,30 @@ export default function Comment ({id,repUserId, profilePicture, username, date, 
             commentId={id}
             />
         </div>
+        <BottomDrawer isOpen={isDrawerOpen} onClose={()=>setIsDrawerOpen} drawerContent={
+          <div className="flex flex-col">
+            {profileLink == sessionData?.username ? (
+              <>
+                <button onClick={()=>setIsEditDialog(!isEditDialog)} className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded">
+                  Edit
+                </button>
+                <button onClick={handleDelete} className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded">
+                  Delete Comment
+                </button>
+              </>
+            ):(
+          <button
+              type="button"
+              className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
+                onClick={() => setIsDialogOpen(!isDialogOpen)}
+          >
+              Report
+          </button>    
+            )}
+
+          </div>
+        }/>
+      </>
+        
     )
 }

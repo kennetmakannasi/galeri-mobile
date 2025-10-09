@@ -83,7 +83,7 @@ const EditProfile = () => {
   },[errors])
 
   return (
-    <div className="min-h-screen text-white px-4 md:px-12"> {/* Hapus bg-gray-900 */}
+    <div className="min-h-screen text-white px-4 md:px-12 mb-20"> {/* Hapus bg-gray-900 */}
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="w-full h-full relative mb-22">
         {data?.profile_banner ? (
