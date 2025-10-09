@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/Poppins-Regular.ttf');
+}
+
+@theme{
+  --color-background-light-black: #0D0D0D ;
+  --color-bright-yellow: #DFD700;
+  --color-dark-gray: #2E2E2E;
+  --color-text-gray: #6B6B6B;
+  --color-light-gray: #545353;
+  --color-accent-bright-yellow: #C4B50C;
+  --color-accent-dark-gray: #262626;
+  --color-accent-light-gray: #4B4A4A;
+}
+
+html{
+  background-color: #0D0D0D;
+  color: #ffffff;
+  font-family: Poppins;
+  font-size: 15px;
+}
