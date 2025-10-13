@@ -52,7 +52,7 @@ export default function MainLayout() {
       <Toaster/>
       
         <Notification/>
-        <div className="flex-1">
+        <div className="flex-1 mb-20">
           <Outlet />
         </div>
         <Navbar/>

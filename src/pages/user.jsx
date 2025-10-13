@@ -9,6 +9,8 @@ import { SessionData } from "../components/layout/mainLayout";
 import { UseToken } from "../helpers/useToken";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import BottomDrawer from "../components/bottomDrawer";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 export default function User(){
   const {username} = useParams();
@@ -36,6 +38,39 @@ export default function User(){
     }
  
   }
+
+  async function handleLogOut(){
+    await toast.promise(
+      axios.get(`${baseUrl}/api/auth/logout`,{
+          headers: {
+            Authorization: `Bearer ${UseToken()}`
+              }
+          }),
+          {
+              loading: 'Logging Out...',
+              success: <b>Success!</b>,
+          } ,
+          {
+              loading:{
+            style: {
+          borderRadius: '10px',
+          background: '#2E2E2E',
+          color: '#fff',
+            },
+              },
+              success:{
+            style:{
+              borderRadius: '10px',
+              background: '#2E2E2E',
+              color: '#fff',
+            }
+        },
+      }
+    )
+    Cookies.remove("token")
+    Cookies.remove("uId")
+    navigate('/auth/login')
+    }
 
   async function handleFollow(id) {
     const res = await axios.post(`${baseUrl}/api/users/${id}/follow`,{},{
@@ -153,14 +188,23 @@ export default function User(){
     drawerContent={
       <div className="flex flex-col gap-3">
         {id == sessionData?.id ? (
-          <Link to="/profile/edit">
+          <>
+            <Link to="/profile/edit">
+              <button
+              type="button"
+              className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
+              >
+              Edit Profile
+              </button>
+            </Link> 
             <button
+            onClick={handleLogOut}
             type="button"
             className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
             >
-            Edit Profile
+            Logout
             </button>
-          </Link> 
+          </>
         ):(
           <div className="flex flex-col">
             <button
