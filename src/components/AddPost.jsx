@@ -7,8 +7,7 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export default function UploadModal() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function UploadModal({isOpen, onClose, previewImg, img}) {
   const {
     register, 
     handleSubmit, 
@@ -24,7 +23,7 @@ export default function UploadModal() {
       const payload = {
         "title": data.title,
         "description": data.description,
-        "image_url": data.image_url[0]
+        "image_url": img
       }
 
       const res = await toast.promise(
@@ -83,10 +82,6 @@ export default function UploadModal() {
     }
     
   }
-
-  const img = watch("image_url");
-  const file = img?  img[0] : null
-  const previewImg = file? URL.createObjectURL(file) : null
   
   useEffect(()=>{
     if(errors){
@@ -98,16 +93,8 @@ export default function UploadModal() {
 
   return (
     <>
-      {/* Tombol buka modal */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="flex w-full items-center justify-center"
-      >
-        <Icon height={20} icon={'basil:add-outline'}/>
-      </button>
-
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
+        <Dialog as="div" className="relative z-50" onClose={onClose}>
           {/* Background overlay */}
           <Transition.Child
             as={Fragment}
@@ -157,16 +144,6 @@ export default function UploadModal() {
                       <div className="border-b border-gray-600 my-4 w-full"></div> 
                       </>
                     )}
-
-                    <input className="absolute size-full opacity-0" type="file" name="" id="" {...register("image_url",{
-                      required:'image is required',
-                      validate: {
-                        lessThan2MB: (fileList)=>
-                        fileList[0]?.size <= 2 * 1024 * 1024 || 'Maxiumum image size is 2 MB',
-                      }
-                    })}/>
-                    {errors.image_url && <p>{errors.image_url.message}</p>}
-
                   </div>
 
                   {/* Input Title & Caption */}

@@ -65,7 +65,7 @@ export default function Login(){
                 })
                 }
             }else{
-                toast.error("Unknown Error",{
+                toast.error(error.message,{
                     style:{
                          borderRadius: '10px',
                         background: '#2E2E2E',

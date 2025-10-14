@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js"
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router"
 import Cookies from "js-cookie";
 import { UseToken } from "../helpers/useToken";
@@ -7,6 +7,9 @@ import axios from "axios";
 import UploadModal from "./AddPost";
 import { SessionData } from "./layout/mainLayout";
 import toast from "react-hot-toast";
+import BottomDrawer from "../components/bottomDrawer";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera"
+import { useUrlToFile } from "../helpers/useUrlToFile";
 
 export default function Navbar(){
     const baseUrl = import.meta.env.VITE_API_URL;
@@ -14,6 +17,10 @@ export default function Navbar(){
     const path = location.pathname;
     const sessionData = useContext(SessionData);
     const navigate = useNavigate()
+    const [src, setSrc] = useState('')
+    const [isOpen, setIsOpen] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [file, setFile] = useState('');
 
     async function handleLogOut(){
         await toast.promise(
@@ -48,7 +55,42 @@ export default function Navbar(){
         navigate('/auth/login')
     }
 
+    async function OpenGallery() {
+        const image = await Camera.getPhoto({
+            quality: 90,
+            allowEditing: false,
+            resultType: CameraResultType.DataUrl,
+            source: CameraSource.Photos
+        });
+
+        setSrc(image.dataUrl)
+        const img = useUrlToFile(image.dataUrl, "image.jpg")
+        setFile(img);
+    }
+
+    async function OpenCam() {
+        const image = await Camera.getPhoto({
+            quality: 90,
+            allowEditing: false,
+            resultType: CameraResultType.DataUrl,
+            source: CameraSource.Camera
+        });
+
+        setSrc(image.dataUrl)
+        const img = useUrlToFile(image.dataUrl, "image.jpg")
+        setFile(img);
+    }
+
+
+    useEffect(()=>{
+        setIsOpen(false)
+        if(src !== ''){
+            setModal(true)
+        }
+    },[src])
+
     return(
+        <>
     <div className="w-full bg-background-light-black fixed bottom-0 border-dark-gray border-t-2">
          <ul className="grid grid-cols-6 w-full">
             <li className="my-5 w-full">
@@ -72,7 +114,13 @@ export default function Navbar(){
                 </Link>
             </li>
             <li className="my-5 w-full">
-                <UploadModal/>
+                {/* <UploadModal/> */}
+                <button
+            onClick={() => setIsOpen(true)}
+            className="flex w-full items-center justify-center"
+            >
+        <Icon height={20} icon={'basil:add-outline'}/>
+        </button>
             </li>
             <li className="my-5 w-full">
                 <Link className={`flex w-full items-center justify-center ${path === `/profile/${sessionData?.username}` ? 'text-bright-yellow':''}`} to={`/profile/${sessionData?.username}`}>
@@ -81,6 +129,31 @@ export default function Navbar(){
             </li>
         </ul>
     </div>
+    <BottomDrawer isOpen={isOpen} onClose={()=>setIsOpen(false)} drawerContent={
+                <div className="flex flex-col gap-3">
+                    <button
+                    onClick={OpenGallery}
+                  type="button"
+                  className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
+                  >
+                  Open Gallery
+                  </button>
+                  <button
+                  onClick={OpenCam}
+                  type="button"
+                  className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
+                  >
+                  Open Camera
+                  </button>
+                </div>
+            }/>
+            <UploadModal 
+                isOpen={modal} 
+                onClose={()=>setModal(false)}
+                previewImg={src}
+                img={file}
+            />
+            </>
         
     )
 }
