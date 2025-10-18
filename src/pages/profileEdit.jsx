@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
@@ -6,8 +6,11 @@ import { SessionData } from '../components/layout/mainLayout';
 import { UseToken } from '../helpers/useToken';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import toast from 'react-hot-toast';
+import BottomDrawer from '../components/bottomDrawer';
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera"
+import { useUrlToFile } from '../helpers/useUrlToFile';
 
-const EditProfile = () => {
+export default function EditProfile() {
   const baseUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const data = useContext(SessionData);
@@ -29,8 +32,8 @@ const EditProfile = () => {
       name: data.name,
       username: data.username,
       bio: data.bio,
-      profile_picture: data.profile_picture[0],
-      profile_banner: data.profile_banner[0]
+      profile_picture: proPicFile,
+      profile_banner: bannerFile
     }
 
     await toast.promise(
@@ -68,13 +71,19 @@ const EditProfile = () => {
     console.log(payload)
   }
 
-  const proPicImg = watch("profile_picture");
-  const proPicFile = proPicImg?  proPicImg[0] : null
-  const previewProfilePicture = proPicFile? URL.createObjectURL(proPicFile) : null
+  const [editTargetType, setEditTargetType] = useState(null);
 
-  const proBannerImg = watch("profile_banner");
-  const proBannerFile = proBannerImg?  proBannerImg[0] : null
-  const previewProfileBanner = proBannerFile? URL.createObjectURL(proBannerFile) : null
+  const [ proPicFile, setProPicFile ] = useState(null);
+  const [ proPicSrc , setProPicSrc ] = useState(null);
+
+  // const proBannerImg = watch("profile_banner");
+  // const proBannerFile = proBannerImg?  proBannerImg[0] : null
+  // const previewProfileBanner = proBannerFile? URL.createObjectURL(proBannerFile) : null
+
+  const [ bannerFile, setBannerFile ] = useState(null);
+  const [ bannerSrc , setBannerSrc ] = useState(null);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(()=>{
     setTimeout(() => {
@@ -82,20 +91,65 @@ const EditProfile = () => {
     }, 3000);
   },[errors])
 
+  async function OpenGallery(type) {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Photos
+    });
+
+    if(type == 'banner'){
+      setBannerSrc(image.dataUrl)
+      const img = useUrlToFile(image.dataUrl, "image.jpg")
+      setBannerFile(img);
+      setIsOpen(false)
+    }
+    if(type == 'profile'){
+      setProPicSrc(image.dataUrl)
+      const img = useUrlToFile(image.dataUrl, "image.jpg")
+      setProPicFile(img);
+      setIsOpen(false)
+    }
+  }
+
+  async function OpenCam(type) {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Camera
+    });
+
+    if(type == 'banner'){
+      setBannerSrc(image.dataUrl)
+      const img = useUrlToFile(image.dataUrl, "image.jpg")
+      setBannerFile(img);
+      setIsOpen(false)
+    }
+    if(type == 'profile'){
+      setProPicSrc(image.dataUrl)
+      const img = useUrlToFile(image.dataUrl, "image.jpg")
+      setProPicFile(img);
+      setIsOpen(false)
+    }
+  }
+
   return (
     <div className="min-h-screen text-white px-4 md:px-12 mb-20"> {/* Hapus bg-gray-900 */}
-    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="w-full h-full relative mb-22">
         {data?.profile_banner ? (
           <div className='relative h-48 w-full'>
-            <div className='inset-0 size-full bg-black/30 absolute rounded-4xl flex items-center justify-center'>
+            <button onClick={()=>{
+              setIsOpen(true);
+              setEditTargetType('banner');
+            }} className='inset-0 size-full bg-black/30 absolute rounded-4xl flex items-center justify-center'>
               <div className='bg-black/40 p-3 rounded-full'>
                 <Icon icon="mdi:upload" height={40} />  
-              </div>
-            </div>
-            <input className='absolute size-full opacity-0' type="file" {...register("profile_banner")} />
+              </div> 
+            </button>
             <img
-              src={previewProfileBanner || baseUrl + data?.profile_banner}
+              src={bannerSrc || baseUrl + data?.profile_banner}
               alt="hero"
               className="w-full h-48 mt-8 object-cover rounded-4xl"
             /> 
@@ -109,14 +163,16 @@ const EditProfile = () => {
           <div className="relative">
             {data ? (
               <div className="size-32 rounded-full relative border-4 border-black overflow-hidden">
-                <div className='inset-0 bg-black/30 size-full absolute flex items-center justify-center'>
+                <button onClick={()=> {
+                  setIsOpen(true);
+                  setEditTargetType('profile');
+                }} className='inset-0 bg-black/30 size-full absolute flex items-center justify-center'>
                   <div className='bg-black/40 p-3 rounded-full'>
                     <Icon icon="mdi:upload" height={40} />  
                   </div>
-                </div>
-                <input {...register("profile_picture")} className='size-full absolute opacity-0' type="file" />
+                </button>
                 <img
-                  src={previewProfilePicture || baseUrl + data?.profile_picture}
+                  src={proPicSrc || baseUrl + data?.profile_picture}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
@@ -141,7 +197,7 @@ const EditProfile = () => {
       )}
 
       <div className="mx-auto w-full h-[2px] bg-bright-yellow mt-6"></div>
-
+      <form onSubmit={handleSubmit(onSubmit)}>
       <div className='mt-16'>
           <h2 className="text-lg font-medium text-white mb-4 mt-4">Name</h2>
             <div>
@@ -206,8 +262,24 @@ const EditProfile = () => {
           </div>
       </div>
       </form>
+      <BottomDrawer isOpen={isOpen} onClose={()=>setIsOpen(false)} drawerContent={
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={()=>OpenGallery(editTargetType)}
+          type="button"
+          className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
+          >
+          Open Gallery
+          </button>
+          <button
+          onClick={()=>OpenCam(editTargetType)}
+          type="button"
+          className="text-left px-3 py-2 hover:bg-accent-dark-gray duration-150 transition-all rounded"
+          >
+          Open Camera
+          </button>
+        </div>
+      }/>
     </div>
   );
 };
-
-export default EditProfile;
