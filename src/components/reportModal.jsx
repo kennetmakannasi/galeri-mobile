@@ -1,7 +1,7 @@
 import { Dialog , DialogPanel } from "@headlessui/react"
 import { Icon } from "@iconify/react/dist/iconify.js"
 import axios from "axios"
-import { UseToken } from "../helpers/useToken"
+import { UseToken, api } from "../helpers/api"
 import ModalLayout from "./layout/modalLayout";
 
 export default function ReportModal({open, onClose, repObj, triggerClose, repId, repUserId}){
@@ -16,7 +16,7 @@ export default function ReportModal({open, onClose, repObj, triggerClose, repId,
             reporter_msg: msg
         }
 
-        await axios.post(`${baseUrl}/api/report`
+        await api.post(`/api/report`
         ,payload,
         {
             headers: {

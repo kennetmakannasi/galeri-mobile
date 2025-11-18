@@ -18,7 +18,7 @@ export default function Register(){
     async function onSubmit(data) {
         try{
             const res = await toast.promise(
-                axios.post(`${baseUrl}/api/auth/register`, 
+                api.post(`/api/auth/register`, 
                 {
                     name: data.name,
                     username: data.username,

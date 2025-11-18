@@ -1,6 +1,6 @@
 import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
-import { UseToken } from './helpers/useToken';
+import { UseToken } from './api';
 import { useContext, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
@@ -37,7 +37,7 @@ export default function Notification() {
             channel.listen('PostEvent', (e) => {
               console.log(e);
               toast(
-                `${e.liker.name} ${e.type === 'liked'? 'liked': e.type === 'commented' ? 'commented':''} your post`,
+                `${e.liker_name} ${e.type === 'liked'? 'liked': e.type === 'commented' ? 'commented':''} your post`,
                 {
                   duration: 6000,
                   style: {

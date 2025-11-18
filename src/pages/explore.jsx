@@ -1,7 +1,7 @@
 import axios from "axios";
 import ScrollGrid from "../components/scrollGrid";
 import { useEffect, useState } from "react";
-import { UseToken } from "../helpers/useToken";
+import { UseToken, api } from "../helpers/api";
 import { Link } from "react-router";
 
 export default function ImageScrollSection() {
@@ -10,7 +10,7 @@ export default function ImageScrollSection() {
   const [data, setData] = useState();
 
   async function fetchData() {
-    const res = await axios.get(`${baseUrl}/api/post?page=1&from=trending`,{
+    const res = await api.get(`/api/post?page=1&from=trending`,{
        headers: {
         Authorization: `Bearer ${UseToken()}`
       }

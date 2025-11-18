@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import ScrollGrid from "../components/scrollGrid";
-import { UseToken } from "../helpers/useToken";
+import { UseToken, api } from "../helpers/api";
 import { SessionData } from "../components/layout/mainLayout";
 
 function ProfileHeader({ coverImage, profileImage, username }) {

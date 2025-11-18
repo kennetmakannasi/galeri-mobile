@@ -2,7 +2,7 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { UseToken } from "../helpers/useToken";
+import { UseToken, api } from "../helpers/api";
 import { useNavigate } from "react-router";
 import ModalLayout from "./layout/modalLayout";
 import toast from "react-hot-toast";
@@ -23,7 +23,7 @@ export default function EditComment({open, onClose, commentId}){
     setValue("comment", data?.comment || 'loading...')
 
     async function fetchCommentData() {
-        const res = await axios.get(`${baseUrl}/api/comment/${commentId}`,{
+        const res = await api.get(`/api/comment/${commentId}`,{
             headers: {
             Authorization: `Bearer ${UseToken()}`
             }
@@ -37,7 +37,7 @@ export default function EditComment({open, onClose, commentId}){
 
     async function onSubmit(data) {
         const res = await toast.promise(
-            axios.put(`${baseUrl}/api/comment/${commentId}`,{
+            api.put(`/api/comment/${commentId}`,{
                 comment: data.comment,
             },{
                 headers: {

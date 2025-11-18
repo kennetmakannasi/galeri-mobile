@@ -3,7 +3,7 @@ import { MenuItem } from "@headlessui/react"
 import { useContext, useState } from "react"
 import ReportModal from "./reportModal"
 import { Link, useNavigate } from "react-router"
-import { UseToken } from "../helpers/useToken"
+import { UseToken, api } from "../helpers/api"
 import EditComment from "./editComment"
 import axios from "axios"
 import { SessionData } from "./layout/mainLayout"
@@ -19,7 +19,7 @@ export default function Comment ({id,repUserId, profilePicture, username, date, 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     async function handleDelete() {
-      await axios.delete(`${baseUrl}/api/comment/${id}`,{
+      await api.delete(`/api/comment/${id}`,{
         headers: {
           Authorization: `Bearer ${UseToken()}`
         }

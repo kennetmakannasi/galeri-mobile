@@ -6,7 +6,7 @@ import axios from "axios";
 import ReportModal from "../components/reportModal";
 import { MenuItem } from "@headlessui/react";
 import { SessionData } from "../components/layout/mainLayout";
-import { UseToken } from "../helpers/useToken";
+import { UseToken, api } from "../helpers/api";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import BottomDrawer from "../components/bottomDrawer";
 import Cookies from "js-cookie";
@@ -26,7 +26,7 @@ export default function User(){
 
   async function fetchSelfData() {
     try{
-      const res = await axios.get(`${baseUrl}/api/users/${username}`,{
+      const res = await api.get(`/api/users/${username}`,{
         headers: {
           Authorization: `Bearer ${UseToken()}`
         }
@@ -41,7 +41,7 @@ export default function User(){
 
   async function handleLogOut(){
     await toast.promise(
-      axios.get(`${baseUrl}/api/auth/logout`,{
+      api.get(`/api/auth/logout`,{
           headers: {
             Authorization: `Bearer ${UseToken()}`
               }
@@ -73,7 +73,7 @@ export default function User(){
     }
 
   async function handleFollow(id) {
-    const res = await axios.post(`${baseUrl}/api/users/${id}/follow`,{},{
+    const res = await api.post(`/api/users/${id}/follow`,{},{
       headers: {
         Authorization: `Bearer ${UseToken()}`
       }

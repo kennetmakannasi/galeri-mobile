@@ -2,7 +2,7 @@ import { Icon } from "@iconify/react/dist/iconify.js"
 import { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router"
 import Cookies from "js-cookie";
-import { UseToken } from "../helpers/useToken";
+import { UseToken, api } from "../helpers/api";
 import axios from "axios";
 import UploadModal from "./AddPost";
 import { SessionData } from "./layout/mainLayout";
@@ -24,7 +24,7 @@ export default function Navbar(){
 
     async function handleLogOut(){
         await toast.promise(
-            axios.get(`${baseUrl}/api/auth/logout`,{
+            api.get(`/api/auth/logout`,{
                 headers: {
                     Authorization: `Bearer ${UseToken()}`
                 }

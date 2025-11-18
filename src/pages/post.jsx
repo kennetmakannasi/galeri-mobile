@@ -8,7 +8,7 @@ import Comment from "../components/comment";
 import EditPost from "../components/editPost";
 import { SessionData } from "../components/layout/mainLayout";
 import { months } from "../components/json/months";
-import { UseToken } from "../helpers/useToken";
+import { UseToken, api } from "../helpers/api";
 import BottomDrawer from "../components/bottomDrawer";
 
 export async function handleComment({request,params}) {
@@ -21,7 +21,7 @@ export async function handleComment({request,params}) {
     comment : comment,
   }
     
-  await axios.post(`${baseUrl}/api/comment`, data,
+  await api.post(`/api/comment`, data,
     {
       headers: {
         Authorization: `Bearer ${UseToken()}`
@@ -45,7 +45,7 @@ export default function PostPage() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   async function fetchData() {
-    const res = await axios.get(`${baseUrl}/api/post/${id}`
+    const res = await api.get(`/api/post/${id}`
       ,
     {
         headers: {
@@ -63,7 +63,7 @@ export default function PostPage() {
   console.log(data)
 
   async function handleLike() {
-    await axios.post(`${baseUrl}/api/like/${data.post.id}`
+    await api.post(`/api/like/${data.post.id}`
       ,{},
     {
         headers: {
@@ -74,7 +74,7 @@ export default function PostPage() {
   }
 
   async function handleSave() {
-    await axios.post(`${baseUrl}/api/save`
+    await api.post(`/api/save`
       ,{
         'post_id': data.post.id
       },
@@ -87,7 +87,7 @@ export default function PostPage() {
   }
 
   async function handleDelete() {
-    await axios.delete(`${baseUrl}/api/post/${id}`,{
+    await api.delete(`/api/post/${id}`,{
       headers: {
         Authorization: `Bearer ${UseToken()}`
       }

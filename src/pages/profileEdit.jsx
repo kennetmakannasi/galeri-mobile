@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { SessionData } from '../components/layout/mainLayout';
-import { UseToken } from '../helpers/useToken';
+import { UseToken, api } from '../helpers/api';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import toast from 'react-hot-toast';
 import BottomDrawer from '../components/bottomDrawer';
@@ -37,7 +37,7 @@ export default function EditProfile() {
     }
 
     await toast.promise(
-      axios.post(`${baseUrl}/api/users/editus`, payload,{
+      api.post(`/api/users/editus`, payload,{
         headers: {
           Authorization: 
             `Bearer ${UseToken()}`,

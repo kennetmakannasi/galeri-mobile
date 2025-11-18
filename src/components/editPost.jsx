@@ -2,7 +2,7 @@ import { Dialog, DialogPanel } from "@headlessui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { UseToken } from "../helpers/useToken";
+import { UseToken, api } from "../helpers/api";
 import { useNavigate } from "react-router";
 import ModalLayout from "./layout/modalLayout";
 import toast from "react-hot-toast";
@@ -22,7 +22,7 @@ export default function EditPost({open, onClose, postId}){
     setValue("description", data?.post?.description || 'loading...')
 
     async function fetchPostData() {
-        const res = await axios.get(`${baseUrl}/api/post/${postId}`,{
+        const res = await api.get(`/api/post/${postId}`,{
             headers: {
           Authorization: `Bearer ${UseToken()}`
         }
@@ -36,7 +36,7 @@ export default function EditPost({open, onClose, postId}){
 
     async function onSubmit(data) {
         const res = await toast.promise(
-            axios.put(`${baseUrl}/api/post/${postId}`,{
+            api.put(`/api/post/${postId}`,{
                 title: data.title,
                 description: data.description
             },{

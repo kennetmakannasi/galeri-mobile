@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import Masonry from "react-layout-masonry";
 import { Link } from "react-router";
 import axios from "axios";
-import PostSkeleton from "./postSkeleton";
-import { UseToken } from "../helpers/useToken";
+import { UseToken, api } from "../helpers/api";
 import { useInView } from "react-intersection-observer";
 
 export default function ScrollGrid({endpoint, searchQuery}) {
@@ -18,7 +17,7 @@ export default function ScrollGrid({endpoint, searchQuery}) {
 
  async function fetchData() {
   try{
-    const res = await axios.get(`${baseUrl}/api/${endpoint}?page=${page}${searchQuery ? `&q=${searchQuery}`:''}`,{
+    const res = await api.get(`/api/${endpoint}?page=${page}${searchQuery ? `&q=${searchQuery}`:''}`,{
       headers: {
         Authorization: `Bearer ${UseToken()}`
       }

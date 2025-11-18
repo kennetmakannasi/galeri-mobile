@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Icon } from "@iconify/react";
 import { useForm } from "react-hook-form";
-import { UseToken } from "../helpers/useToken";
+import { UseToken, api } from "../helpers/api";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -27,7 +27,7 @@ export default function UploadModal({isOpen, onClose, previewImg, img}) {
       }
 
       const res = await toast.promise(
-        axios.post(`${baseUrl}/api/post`, payload,
+        api.post(`/api/post`, payload,
           {
             headers: {
               Authorization: `Bearer ${UseToken()}`,

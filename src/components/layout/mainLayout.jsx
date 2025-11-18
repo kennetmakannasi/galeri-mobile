@@ -3,15 +3,15 @@ import Navbar from "../navbar";
 import { Outlet, useLocation, useNavigate } from "react-router"
 import axios from "axios";
 import Cookies from "js-cookie";
-import Notification from "../../notificationEcho";
+import Notification from "../../helpers/notificationEcho";
 import { Toaster } from "react-hot-toast";
 import ReactPullToRefresh from "react-pull-to-refresh";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { api } from "../../helpers/api";
 
 export const SessionData = createContext()
 
 export default function MainLayout() {
-  const baseUrl = import.meta.env.VITE_API_URL;
   const token = Cookies.get("token")
   const navigate = useNavigate();
   const [selfData , setSelfData] = useState(); 
@@ -19,7 +19,7 @@ export default function MainLayout() {
   const [isRefresh, setIsRefresh] = useState(false);
 
   async function fetchSelfData() {
-    const res = await axios.get(`${baseUrl}/api/auth/self`,{
+    const res = await api.get(`/api/auth/self`,{
        headers: {
         Authorization: `Bearer ${token}`
       }
