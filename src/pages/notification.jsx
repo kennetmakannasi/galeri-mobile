@@ -32,7 +32,7 @@ export default function Notification() {
         </h2>
         <div className="mt-8">
             {data?.map((item)=>(
-                <NotificationContainer id={item.id} message={item.message} date={item.created_at} isRead={item.is_read}/>
+                <NotificationContainer id={item.id} message={item.message} date={item.created_at} isRead={item.is_read} type={item.notified_object_type} notifiedId={item.notified_object_id}/>
             ))}    
         </div>
 
