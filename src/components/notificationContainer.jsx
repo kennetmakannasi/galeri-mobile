@@ -25,7 +25,7 @@ export default function NotificationContainer({id, message, date, isRead}){
 
     async function readNotification(id) {
         try{
-            await api.post(`/api/notification/read/${id}`, {
+            await api.post(`/api/notification/read/${id}`,{}, {
                 headers: {
                     Authorization: `Bearer ${UseToken()}`
                 }
