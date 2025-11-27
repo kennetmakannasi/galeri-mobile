@@ -15,7 +15,7 @@ import Post, { handleComment } from './pages/post.jsx';
 import ProfileEdit from './pages/profileEdit.jsx';
 import User from './pages/user.jsx';
 import SearchPage from './pages/search.jsx';
-import TestCam from './pages/test.jsx';
+import Notification from './pages/notification.jsx';
 
 function ErrorPage() {
   return (
@@ -59,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchPage/>
+      },
+      {
+        path: "/notification",
+        element: <Notification/>
       },
       {
         path: "/bookmark",

@@ -104,8 +104,8 @@ export default function Navbar(){
                 </Link>
             </li>
             <li className="my-5 w-full">
-                <Link className={`flex w-full items-center justify-center ${path === '/bookmark' ? 'text-bright-yellow':''}`} to={'/bookmark'}>
-                    <Icon height={22} icon={'material-symbols-light:bookmarks'}/>
+                <Link className={`flex w-full items-center justify-center ${path === '/notification' ? 'text-bright-yellow':''}`} to={'/notification'}>
+                    <Icon height={22} icon={'mingcute:notification-line'}/>
                 </Link>
             </li>
             <li className="my-5 w-full">
