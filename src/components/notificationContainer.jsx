@@ -48,7 +48,7 @@ export default function NotificationContainer({id, message, date, isRead, type, 
                     <button type="button" onClick={()=>handleClick(id)}>
                         <div className="flex items-center">
                             <div className={`bg-bright-yellow size-3 rounded-full ${isRead ? 'opacity-0':''}`}></div>
-                            <div className="ml-3">
+                            <div className="ml-3 text-start">
                                 <p className="text-sm text-gray-200 max-w-80">{message}</p>
                                 <p className="mt-1 text-xs text-text-gray">
                                 {date?.slice(11,16)} 
