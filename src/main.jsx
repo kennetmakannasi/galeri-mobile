@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter, redirect, RouterProvider } from "react-router";
-
+import { Icon } from '@iconify/react/dist/iconify.js';
 import AuthLayout from './components/layout/authLayout.jsx';
 import Login from './pages/auth/login.jsx';
 import Register from './pages/auth/register.jsx';
