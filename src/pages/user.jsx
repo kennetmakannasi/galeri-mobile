@@ -22,7 +22,7 @@ export default function User(){
   const id = data?.id
   const sessionData = useContext(SessionData)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
+  const [loading, setLoading] = useState(true);
 
   async function fetchSelfData() {
     try{
@@ -31,10 +31,12 @@ export default function User(){
           Authorization: `Bearer ${UseToken()}`
         }
       })
-      setData(res.data.content)
-      
+      setData(res.data.content);
+      setLoading(false);
     }catch(error){
-      setError(true)
+      setError(true);
+    }finally{
+      setLoading(false)
     }
  
   }
@@ -141,15 +143,18 @@ export default function User(){
             </div>
             <div className="w-full relative flex items-center md:col-start-2 h-36">
               <div className="md:absolute md:right-3">
-                {id != sessionData?.id && (
-                  <button
-                    type="button"
-                    onClick={()=>{handleFollow(id); fetchSelfData();}}
-                    className=" w-full py-2 my-4 rounded-md text-sm bg-dark-gray hover:bg-accent-dark-gray transition-all duration-150"
-                  >
-                    {data?.isFollowing ? ('Unfollow'):('Follow')}
-                  </button>
+                {!loading && (
+                  id != sessionData?.id && (
+                    <button
+                      type="button"
+                      onClick={()=>{handleFollow(id); fetchSelfData();}}
+                      className=" w-full py-2 my-4 rounded-md text-sm bg-dark-gray hover:bg-accent-dark-gray transition-all duration-150"
+                    >
+                      {data?.isFollowing ? ('Unfollow'):('Follow')}
+                    </button>
+                  )  
                 )}
+
                 {data ? (
                   <>
                     <div>

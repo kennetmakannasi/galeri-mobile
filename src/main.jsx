@@ -19,7 +19,15 @@ import Notification from './pages/notification.jsx';
 
 function ErrorPage() {
   return (
-    <h1>404</h1>
+    <div className='size-full flex items-center justify-center'>
+      <div className='h-screen flex flex-col justify-center items-center text-center -mt-'>
+        <Icon height={80} icon={'streamline-sharp:browser-error-404'}/>
+        <div className="mt-2">
+          <p className="text-xl font-bold">Page not found</p>
+          <p className="text-text-gray">Make sure you type the right address</p>
+        </div>
+      </div>
+    </div>
   );
 }
 

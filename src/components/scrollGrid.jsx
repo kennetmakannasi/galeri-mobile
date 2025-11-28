@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import Masonry from "react-layout-masonry";
 import { Link } from "react-router";
 import axios from "axios";
-import { UseToken, api } from "../helpers/api";
+import PostSkeleton from "./postSkeleton";
+import { UseToken } from "../helpers/api";
 import { useInView } from "react-intersection-observer";
+import { api } from "../helpers/api";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function ScrollGrid({endpoint, searchQuery}) {
   const [data, setData] = useState();
@@ -15,64 +18,84 @@ export default function ScrollGrid({endpoint, searchQuery}) {
   const [test, setTest] = useState(false);
   const [error, setError] = useState(false);
 
- async function fetchData() {
-  try{
-    const res = await api.get(`/api/${endpoint}?page=${page}${searchQuery ? `&q=${searchQuery}`:''}`,{
-      headers: {
-        Authorization: `Bearer ${UseToken()}`
+  async function fetchData() {
+    try{
+      const res = await api.get(`/api/${endpoint}?page=${page}${searchQuery ? `&q=${searchQuery}`:''}`,{
+        headers: {
+          Authorization: `Bearer ${UseToken()}`
+        }
+      })
+
+      if(page === 1){
+        setData(res.data.content.data)
+        setNextPage(res.data.content.last_page)
+        setLoading(false)
+      } 
+      else{
+        setData(prevDatas => prevDatas.concat(res.data.content.data))
+        setLoading(false)
       }
-    })
-
-    if(page === 1){
-      setData(res.data.content.data)
-      setNextPage(res.data.content.last_page)
-      setLoading(false)
-    }  
-    else{
-      setData(prevDatas => prevDatas.concat(res.data.content.data))
-      setLoading(false)
+    }catch(error){
+      setError(true)
     }
-  }catch(error){
-    setError(true)
-  }
   
- }
-
- console.log(data)
-
- useEffect(()=>{
-  fetchData()
- },[page])
-
-//  useEffect(()=>{
-//   const timer = setTimeout(() => {
-//     setTest(false)
-//   }, 2000);
-
-//   return ()=> clearTimeout(timer);
-//  },[])
-
- if(inView){
-  if(nextPage != 1){
-    setTimeout(() => {
-      console.log("inview akaka")  
-      setPage(page+1)
-      setLoading(true)
-    }, 50);
   }
- }
+
+  console.log(data)
+
+  useEffect(()=>{
+    fetchData()
+  },[page])
+
+//   useEffect(()=>{
+//    const timer = setTimeout(() => {
+//      setTest(false)
+//    }, 2000);
+
+//    return ()=> clearTimeout(timer);
+//   },[])
+
+  if(inView){
+    if(nextPage != 1){
+      setTimeout(() => {
+        console.log("inview akaka") 
+        setPage(page+1)
+        setLoading(true)
+      }, 50);
+    }
+  }
 
   return (
-    <div className="mt-8">
+    <div>
       {error ? (
-        endpoint === 'post/search' ? (
-          <p>{searchQuery} not found</p>
-        ):(
-          <p>something wrong</p>
-        )
+        <div className="h-screen flex flex-col justify-center items-center text-center"> 
+          {endpoint === 'post/search' ? (
+            <>
+              <Icon className="scale-x-[-1]" icon={'lucide:search-x'} height={80}/>
+              <div className="mt-2">
+                <p className="text-xl font-bold">Search Failed</p>
+                <p className="text-text-gray">No results found for **{searchQuery}**.</p>
+              </div>
+            </>
+
+          ):(
+            <>
+              <Icon icon={'streamline-ultimate:smiley-wrong-bold'} height={80}/>
+              <div className="mt-2">
+                <p className="text-xl font-bold">Something Went Wrong</p>
+                <p className="text-text-gray">There was an issue loading the data. Please try again later.</p>
+              </div>
+            </>
+
+          )}
+        </div>
       ):(
         data?.length === 0 ? (
-          <p>{endpoint === 'save'? 'you didnt have any saved posts yet' : 'you didnt post anything yet'}</p>
+          <div className="h-screen flex flex-col justify-center items-center text-center"> 
+            <Icon icon={'fluent:content-view-16-regular'} height={80}/>
+            <p className="text-xl font-bold">No Content Yet</p>
+            <p className="text-gray-500">{endpoint === 'save'? 'You haven\'t saved any posts yet.' : 'You haven\'t posted anything yet.'}</p>
+          </div>
         ):(
         <Masonry columns={{ 640: 2, 1024: 3, 1440: 4 }} gap={17}>
         {data?.map((item, idx) => (
@@ -103,7 +126,7 @@ export default function ScrollGrid({endpoint, searchQuery}) {
         ):(
           'no more page'
         )}
-        </Masonry>  
+        </Masonry> 
         )
       )}
       

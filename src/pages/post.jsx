@@ -10,6 +10,7 @@ import { SessionData } from "../components/layout/mainLayout";
 import { months } from "../components/json/months";
 import { UseToken, api } from "../helpers/api";
 import BottomDrawer from "../components/bottomDrawer";
+import { formatDate } from "../helpers/date";
 
 export async function handleComment({request,params}) {
   const baseUrl = import.meta.env.VITE_API_URL;
@@ -195,9 +196,7 @@ export default function PostPage() {
             {/* meta */}
             {data ? (
               <div className="mt-3 text-xs text-text-gray">
-                {data?.post?.created_at.slice(11,16)} 
-                {data?.post?.created_at.slice(11,13) <= 12 ? (' am'):(' pm')}
-                {' · '+ months[data?.post?.created_at.slice(5,7).replace('0','')] +' '+ data?.post?.created_at.slice(8,10) + ', ' + data?.post?.created_at.slice(0,4)}
+                {formatDate(data?.post?.created_at)}
               </div>  
             ):(
               <div className="bg-dark-gray w-56 h-4 mt-3 rounded-md animate-pulse"></div>
